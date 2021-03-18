@@ -1,4 +1,4 @@
-with orders as (
+with stg_orders as (
     
     select
         id as order_id,
@@ -9,4 +9,4 @@ with orders as (
     from raw.jaffle_shop.orders
 )
 
-select * from orders
+select * from stg_orders
