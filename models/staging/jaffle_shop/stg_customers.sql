@@ -1,4 +1,4 @@
-with customers as (
+with stg_customers as (
     
     select 
         id as customer_id,
@@ -8,4 +8,4 @@ with customers as (
     from raw.jaffle_shop.customers
 )
 
-select * from customers
+select * from stg_customers
