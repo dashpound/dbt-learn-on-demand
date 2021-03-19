@@ -1,30 +1,38 @@
-version: 2
+-- Requirements
+    -- order_id
+    -- customer_id
+    -- amount
 
-models:
-    - name: stg_customers
-      description: Staged customer data from hte Jaffle Shop app.
-      columns: 
-        - name: customer_id
-          description: This is the primary key on the table.
-          tests: 
-            - unique
-            - not_null
+with payment as (
 
-    - name: stg_orders
-      description: Staged order data from the Jaffle Shop app.
-      columns:
-        - name: order_id
-          description: Primary key on the table.
-          tests:
-            - unique
-            - not null
-        - name: status
-          description: "{{doc('order_status')}}"
-          tests: 
-            - accepted_values:
-                values:
-                  - completed
-                  - shipped 
-                  - returned
-                  - placed
-                  - return_pending
+    select 
+        order_id
+        , payment_amount as amount 
+    from 
+        {{ref('stg_payments')}}
+
+), 
+
+orders as (
+
+    select 
+        customer_id
+        , order_id
+   
+    from 
+        {{ref('stg_orders')}}
+), 
+
+fct_orders as (
+    
+    select 
+        payment.order_id as order_id
+        , orders.customer_id as customer_id
+        , payment.amount as amount
+
+    from payment
+    left join orders using (order_id)
+
+)
+
+select * from fct_orders
